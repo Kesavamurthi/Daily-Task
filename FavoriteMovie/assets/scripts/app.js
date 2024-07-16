@@ -6,24 +6,35 @@ const addbtnelement = cancelbtnelement.nextElementSibling;
 const userInput = document.querySelectorAll('input');
 const movies = [];
 const entryCard = document.getElementById('entry-text');
+const deleteMovieModal = document.getElementById('delete-modal');
+
 
 const backdropToggle = () => {
     back.classList.toggle('visible');
 }
 
+const closeMovieModal = () => {
+    model.classList.remove('visible');
+};
+
 const addingMovieButton = () =>{
-    model.classList.toggle('visible');
+    model.classList.add('visible');
     backdropToggle();
 };
 
+
 const backdropToggleClickHandler = () => {
-    addingMovieButton();
+    closeMovieModal();
+    cancelMovieDeletion();
 };
 
-
+const cancelMovieDeletion = () =>{
+    backdropToggle();
+    deleteMovieModal.classList.remove('visible');
+};
 
 const cancelbtn = () => {
-    addingMovieButton();
+    closeMovieModal();
     clearUserInput();
 };
 
@@ -40,9 +51,32 @@ const renderUI = () => {
     }else {
         entryCard.style.display='none';
     }
-}
+};
 
-const newMovieList = (title, url, rating) =>{
+const removeMovie = () => {
+    let movieIdIndex = 0;
+    for (const ind of movies){
+        if (ind.id === movieId){
+            break;
+        }
+        movieIdIndex++;
+    }
+    movies.splice(movieIdIndex, 1);
+    let root = document.getElementById('movie-list');
+    root.children[movieIdIndex].remove();
+};
+
+const removeMovieHandler = movieId => {
+    deleteMovieModal.classList.add('visible');
+    backdropToggle();
+    const cancelDelBtn = deleteMovieModal.querySelector('.btn--passive');
+    const cnfmDelBtn = deleteMovieModal.querySelector('.btn--danger');
+    cancelDelBtn.addEventListener('click', cancelMovieDeletion);
+    cnfmDelBtn.addEventListener('click',removeMovie.bind(null, movieId));
+    //removeMovie(movieId);
+};
+
+const newMovieList = (id, title, url, rating) =>{
     const newList = document.createElement('li');
     newList.className = 'movie-element';
     newList.innerHTML = `
@@ -54,6 +88,7 @@ const newMovieList = (title, url, rating) =>{
         </div>
         </div>
     `;
+    newList.addEventListener('click', removeMovieHandler.bind(null, id));
     const root = document.getElementById('movie-list');
     root.append(newList);
 }
@@ -69,6 +104,7 @@ const confirmAddingMovie = () => {
     }
 
     const newMovie = {
+        id : Math.random().toString(),
         title : movieInput,
         link : urlInput,
         rating : ratingInput
@@ -76,9 +112,10 @@ const confirmAddingMovie = () => {
 
     movies.push(newMovie);
     console.log(movies);
-    addingMovieButton();
+    closeMovieModal();
+    backdropToggle();
     renderUI();
-    newMovieList(newMovie.title, newMovie.link, newMovie.rating);
+    newMovieList(newMovie.id,newMovie.title, newMovie.link, newMovie.rating);
     clearUserInput();
 };
 
