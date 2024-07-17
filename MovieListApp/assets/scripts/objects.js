@@ -2,7 +2,7 @@ const addMovieBtn = document.getElementById('add-movie-btn');
 const searchMovieBtn = document.getElementById('search-btn');
 const movies = [];
 
-const renderMovie = () => {
+const renderMovie = (filter = '') => {
     const movieList = document.getElementById('movie-list');
     
     if(movies.length === 0){
@@ -14,7 +14,9 @@ const renderMovie = () => {
 
     movieList.innerHTML = '';
 
-    movies.forEach((movie) => {
+    const filteredMovies = !filter ? movies : movies.filter(movie => movie.info.title.includes(filter));
+
+    filteredMovies.forEach((movie) => {
         const movieEl = document.createElement('li');
         let text = movie.info.title + ' - ';
         for (const key in movie.info){
@@ -29,7 +31,6 @@ const renderMovie = () => {
 
 const addNewMovieHandler = () => {
     const userTitle = document.getElementById('title').value;
-    console.log(userTitle);
     const extraName = document.getElementById('extra-name').value;
     const extraValue = document.getElementById('extra-value').value;
 
@@ -38,11 +39,17 @@ const addNewMovieHandler = () => {
             title : userTitle,
             [extraName] : extraValue
         },
-        id : Math.random()
+        id : Math.random().toString()
     };
 
     movies.push(newMovie);
     renderMovie();
 }; 
 
+const searchMoviehandler = () => {
+    const filterTerm = document.getElementById('filter-title').value;
+    renderMovie(filterTerm);
+};
+
 addMovieBtn.addEventListener('click', addNewMovieHandler);
+searchMovieBtn.addEventListener('click',searchMoviehandler);
