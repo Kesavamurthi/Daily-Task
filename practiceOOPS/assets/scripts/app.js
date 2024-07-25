@@ -3,6 +3,14 @@ class ToolTip {}
 class ProjectItem {
     constructor(id){
         this.id = id;
+        this.connectInfoButton();
+        this.connectSwitchButton();
+    }
+    connectInfoButton(){}
+    connectSwitchButton(){
+        const projectItemElement = document.getElementById(this.id);
+        const switchBtn = projectItemElement.querySelector('button:last-of-type');
+        switchBtn.addEventListener('click',)
     }
 }
 
@@ -17,7 +25,16 @@ class ProjectList {
         }
         console.log(this.projects);
     }
-}
+
+    addProject(){}
+
+    switchProject(projectId){
+        // const projectIndex = this.projects.findIndex(p => p.id === projectId)
+        // this.projects.splice(projectIndex, 1);
+
+        this.projects = this.projects.filter(p => p.id !==projectId);
+    }
+} 
 class App {
     static init(){
         const activeProjectsList = new ProjectList('active');
